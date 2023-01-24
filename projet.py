@@ -21,6 +21,7 @@ def genKeyStepOne(cards):
             # Si le joker n'est pas au début
             if index != 0 :
                 # On recule le joker d'une position
+                # TODO Revoir les consignes pour bien comprendre le swap
                 cardToSwap = cards[index - 1]
                 cards[index - 1] = currentCard
                 cards[index] = cardToSwap
@@ -29,6 +30,7 @@ def genKeyStepOne(cards):
             # Si le joker est au début
             else : 
                 # On met le joker à la position 2 
+                # TODO Revoir les consignes pour bien comprendre le swap
                 cardToSwap = cards[1]
                 cards[1] = currentCard
                 cards[0] = cardToSwap
@@ -53,7 +55,8 @@ def genKeyStepTwo(cards):
                 
             # Si le joker est au début
             elif index == 0 : 
-                # On met le joker à la position 2 
+                # On met le joker à la troisième position
+                # TODO Revoir les consignes pour bien comprendre le swap
                 cardToSwap = cards[2]
                 cards[2] = currentCard
                 cards[0] = cardToSwap
@@ -61,9 +64,10 @@ def genKeyStepTwo(cards):
 
             # Si le joker est à la deuxième position
             else:
-                # On met le joker à la position 3 
-                cardToSwap = cards[3]
-                cards[3] = currentCard
+                # On met le joker à la deuxième position
+                # TODO Revoir les consignes pour bien comprendre le swap
+                cardToSwap = cards[1]
+                cards[1] = currentCard
                 cards[1] = cardToSwap
                 return cards
 
