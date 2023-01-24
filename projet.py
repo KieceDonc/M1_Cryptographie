@@ -34,6 +34,38 @@ def genKeyStepOne(cards):
                 cards[0] = cardToSwap
                 return cards
 
+# Applique la deuxième opération pour obtenir la clée à partir du flux
+# Recule le joker rouge de deux positions dans le jeu carte
+def genKeyStepTwo(cards):
+    # On parcourt notre jeu de carte
+    for index in range(len(cards)):
+        currentCard = cards[index]
+        
+        # Si la carte est un joker (la valeur contenu est 54)
+        if  currentCard == 54 :
+            # Si le joker n'est pas au début
+            if index != 0 and index != 1 :
+                # On recule le joker de deux positions
+                cardToSwap = cards[index - 2]
+                cards[index - 2] = currentCard
+                cards[index] = cardToSwap
+                return cards
+                
+            # Si le joker est au début
+            elif index == 0 : 
+                # On met le joker à la position 2 
+                cardToSwap = cards[2]
+                cards[2] = currentCard
+                cards[0] = cardToSwap
+                return cards
+
+            # Si le joker est à la deuxième position
+            else:
+                # On met le joker à la position 3 
+                cardToSwap = cards[3]
+                cards[3] = currentCard
+                cards[1] = cardToSwap
+                return cards
 
 # Génère une clée aléatoire d'une longeur donnée en paramètre
 def genKey(length):
