@@ -1,17 +1,17 @@
 import random
 
-
 def main():
     cards = list(range(1, 55))
     print(cards)
-    print(genKeyStepOne(cards))
     genKeyStepOne(cards)
-    print(cards)
-    print(genKey(10))
+    genKeyStepTwo(cards)
+    genKeyStepThree(cards)
+
 
 # Applique la première opération pour obtenir la clée à partir du flux
 # Recule le joker d'une position dans le jeu carte
 def genKeyStepOne(cards):
+    printBeginningStep("1",cards)
     # On parcourt notre jeu de carte
     for index in range(len(cards)):
         currentCard = cards[index]
@@ -21,7 +21,7 @@ def genKeyStepOne(cards):
             # Si le joker n'est pas au début
             if index != 0 :
                 # On recule le joker d'une position
-                # TODO Revoir les consignes pour bien comprendre le swap
+                # TODO Revoir les consignes pour bien comprendre le swap & l'ordre des cartes
                 cardToSwap = cards[index - 1]
                 cards[index - 1] = currentCard
                 cards[index] = cardToSwap
@@ -30,7 +30,7 @@ def genKeyStepOne(cards):
             # Si le joker est au début
             else : 
                 # On met le joker à la position 2 
-                # TODO Revoir les consignes pour bien comprendre le swap
+                # TODO Revoir les consignes pour bien comprendre le swap & l'ordre des cartes
                 cardToSwap = cards[1]
                 cards[1] = currentCard
                 cards[0] = cardToSwap
@@ -39,6 +39,7 @@ def genKeyStepOne(cards):
 # Applique la deuxième opération pour obtenir la clée à partir du flux
 # Recule le joker rouge de deux positions dans le jeu carte
 def genKeyStepTwo(cards):
+    printBeginningStep("2",cards)
     # On parcourt notre jeu de carte
     for index in range(len(cards)):
         currentCard = cards[index]
@@ -56,7 +57,7 @@ def genKeyStepTwo(cards):
             # Si le joker est au début
             elif index == 0 : 
                 # On met le joker à la troisième position
-                # TODO Revoir les consignes pour bien comprendre le swap
+                # TODO Revoir les consignes pour bien comprendre le swap & l'ordre des cartes
                 cardToSwap = cards[2]
                 cards[2] = currentCard
                 cards[0] = cardToSwap
@@ -65,11 +66,35 @@ def genKeyStepTwo(cards):
             # Si le joker est à la deuxième position
             else:
                 # On met le joker à la deuxième position
-                # TODO Revoir les consignes pour bien comprendre le swap
+                # TODO Revoir les consignes pour bien comprendre le swap & l'ordre des cartes
                 cardToSwap = cards[1]
                 cards[1] = currentCard
                 cards[1] = cardToSwap
                 return cards
+
+# Applique la troisième opération pour obtenir la clée à partir du flux
+# On recherche d'abord la position des deux jokers
+# Pour chaque joker, on intervertit le paquet en dessous du joker par celui du dessus
+def genKeyStepThree(cards):
+    printBeginningStep("3",cards)
+    
+    # Détermine la position des jokers dans le jeu de carte
+    # TODO tester au extremité
+    firstJokeyIndex = findCardIndex(cards, 53)
+    secondJokeyIndex = findCardIndex(cards, 54)
+    
+    # Détermine la position des jokers 
+    firstIndex = -1
+    secondIndex = -1
+    if firstJokeyIndex < secondJokeyIndex :
+        firstIndex = firstJokeyIndex
+        secondIndex = secondJokeyIndex
+    else:
+        firstIndex = secondJokeyIndex
+        secondIndex = firstJokeyIndex
+
+    cards = [*cards[firstIndex + 1:], cards[firstIndex], *cards[0:firstIndex-1]]
+    print(cards)
 
 # Génère une clée aléatoire d'une longeur donnée en paramètre
 def genKey(length):
@@ -81,6 +106,30 @@ def genKey(length):
         key[index] = random.randint(1, 27)
     return key
 
+# Recherche l'index d'une carte dans le jeu
+def findCardIndex(cards, cardValue):
+    # Recherche la position d'un joker 
+        founded = False
+        index = -1
+        while not founded:
+            index += 1
+            currentCard = cards[index]
+            founded = currentCard == Value or index > 54
+        if index > 54 :
+            print("Erreur pour la recherche de "+str(cardValue)+"dans ")
+            print(cards)
+            return -1 
+        else
+            return index
 
+# Affiche le début d'uneopération pour obtenir la clée à partir du flux et le jeu de cartes
+def printBeginningStep(stepIndex, cards):
+    separator = "-------------------------------------------------------------------------"
+    print(separator+"\n")
+    print("Début partie "+stepIndex+":\n")
+    print(cards)
+    print("")
+    print(separator)
+    
 if __name__ == "__main__":
     main()
