@@ -3,8 +3,8 @@ import random
 def main():
     cards = list(range(1, 55))
     print(cards)
-    genKeyStepOne(cards)
-    genKeyStepTwo(cards)
+    #genKeyStepOne(cards)
+    #genKeyStepTwo(cards)
     genKeyStepThree(cards)
 
 
@@ -79,21 +79,24 @@ def genKeyStepThree(cards):
     printBeginningStep("3",cards)
     
     # Détermine la position des jokers dans le jeu de carte
-    # TODO tester au extremité
     firstJokeyIndex = findCardIndex(cards, 53)
     secondJokeyIndex = findCardIndex(cards, 54)
     
     # Détermine la position des jokers 
+    # Le premier index décrit l'index du premier joker dans le jeu de carte
+    # Le second index décrit l'index du second joker après avoir intervertit le paquet
     firstIndex = -1
     secondIndex = -1
     if firstJokeyIndex < secondJokeyIndex :
         firstIndex = firstJokeyIndex
-        secondIndex = secondJokeyIndex
+        secondIndex = secondJokeyIndex - firstIndex - 1
     else:
         firstIndex = secondJokeyIndex
-        secondIndex = firstJokeyIndex
+        secondIndex = firstJokeyIndex - firstIndex - 1
 
-    cards = [*cards[firstIndex + 1:], cards[firstIndex], *cards[0:firstIndex-1]]
+    cards = invertByIndex(cards, firstIndex)
+    print(cards)
+    cards = invertByIndex(cards, secondIndex)
     print(cards)
 
 # Génère une clée aléatoire d'une longeur donnée en paramètre
@@ -106,6 +109,17 @@ def genKey(length):
         key[index] = random.randint(1, 27)
     return key
 
+# Intervertit le jeu de cartes selon l'index d'une carte
+def invertByIndex(cards, index):
+    if index == 0:
+        cards = [*cards[index + 1:], cards[index]]
+    elif index == 53:
+        cards = [cards[index], *cards[0:index-1]]
+    else :
+        cards = [*cards[index + 1:], cards[index], *cards[0:index-1]]
+
+    return cards
+
 # Recherche l'index d'une carte dans le jeu
 def findCardIndex(cards, cardValue):
     # Recherche la position d'un joker 
@@ -114,12 +128,13 @@ def findCardIndex(cards, cardValue):
         while not founded:
             index += 1
             currentCard = cards[index]
-            founded = currentCard == Value or index > 54
-        if index > 54 :
+            founded = currentCard == cardValue or index > 53
+
+        if index > 53 :
             print("Erreur pour la recherche de "+str(cardValue)+"dans ")
             print(cards)
             return -1 
-        else
+        else :
             return index
 
 # Affiche le début d'uneopération pour obtenir la clée à partir du flux et le jeu de cartes
