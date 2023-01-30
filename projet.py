@@ -2,11 +2,11 @@ import random
 
 def main():
     cards = list(range(1, 55))
+    #cards = genKeyStepOne(cards)
+    #cards = genKeyStepTwo(cards)
+    #cards = genKeyStepThree(cards)
+    cards = genKeyStepFourth(cards)
     print(cards)
-    #genKeyStepOne(cards)
-    #genKeyStepTwo(cards)
-    genKeyStepThree(cards)
-
 
 # Applique la première opération pour obtenir la clée à partir du flux
 # Recule le joker d'une position dans le jeu carte
@@ -75,6 +75,7 @@ def genKeyStepTwo(cards):
 # Applique la troisième opération pour obtenir la clée à partir du flux
 # On recherche d'abord la position des deux jokers
 # Pour chaque joker, on intervertit le paquet en dessous du joker par celui du dessus
+# TODO Réaliser des tests
 def genKeyStepThree(cards):
     printBeginningStep("3",cards)
     
@@ -95,9 +96,19 @@ def genKeyStepThree(cards):
         secondIndex = firstJokeyIndex - firstIndex - 1
 
     cards = invertByIndex(cards, firstIndex)
-    print(cards)
     cards = invertByIndex(cards, secondIndex)
-    print(cards)
+
+    return cards
+
+def genKeyStepFourth(cards):
+    printBeginningStep("4", cards)
+
+    index = cards[53]-1
+    if index == 53:
+        return cards
+    else :
+        cards = [*cards[index + 1:], *cards[0:index], cards[index]]
+    return cards
 
 # Génère une clée aléatoire d'une longeur donnée en paramètre
 def genKey(length):
@@ -114,9 +125,9 @@ def invertByIndex(cards, index):
     if index == 0:
         cards = [*cards[index + 1:], cards[index]]
     elif index == 53:
-        cards = [cards[index], *cards[0:index-1]]
+        cards = [cards[index], *cards[0:index]]
     else :
-        cards = [*cards[index + 1:], cards[index], *cards[0:index-1]]
+        cards = [*cards[index + 1:], cards[index], *cards[0:index]]
 
     return cards
 
