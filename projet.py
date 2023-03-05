@@ -1,161 +1,127 @@
 import random
+# Create a deck of cards
+def create_deck():
+    return [i for i in range(1,55)]
 
-def main():
-    cards = list(range(1, 55))
-    #cards = genKeyStepOne(cards)
-    #cards = genKeyStepTwo(cards)
-    #cards = genKeyStepThree(cards)
-    cards = genKeyStepFourth(cards)
-    print(cards)
+# Shuffle the deck
+def shuffle_deck(cards):
+    random.shuffle(cards)
+    return cards
 
-# Applique la première opération pour obtenir la clée à partir du flux
-# Recule le joker d'une position dans le jeu carte
-def genKeyStepOne(cards):
-    printBeginningStep("1",cards)
-    # On parcourt notre jeu de carte
-    for index in range(len(cards)):
-        currentCard = cards[index]
-        
-        # Si la carte est un joker (la valeur contenu est 53 ou 54)
-        if  currentCard == 53 or currentCard == 54 :
-            # Si le joker n'est pas au début
-            if index != 0 :
-                # On recule le joker d'une position
-                # TODO Revoir les consignes pour bien comprendre le swap & l'ordre des cartes
-                cardToSwap = cards[index - 1]
-                cards[index - 1] = currentCard
-                cards[index] = cardToSwap
-                return cards
-                
-            # Si le joker est au début
-            else : 
-                # On met le joker à la position 2 
-                # TODO Revoir les consignes pour bien comprendre le swap & l'ordre des cartes
-                cardToSwap = cards[1]
-                cards[1] = currentCard
-                cards[0] = cardToSwap
-                return cards
-
-# Applique la deuxième opération pour obtenir la clée à partir du flux
-# Recule le joker rouge de deux positions dans le jeu carte
-def genKeyStepTwo(cards):
-    printBeginningStep("2",cards)
-    # On parcourt notre jeu de carte
-    for index in range(len(cards)):
-        currentCard = cards[index]
-        
-        # Si la carte est un joker (la valeur contenu est 54)
-        if  currentCard == 54 :
-            # Si le joker n'est pas au début
-            if index != 0 and index != 1 :
-                # On recule le joker de deux positions
-                cardToSwap = cards[index - 2]
-                cards[index - 2] = currentCard
-                cards[index] = cardToSwap
-                return cards
-                
-            # Si le joker est au début
-            elif index == 0 : 
-                # On met le joker à la troisième position
-                # TODO Revoir les consignes pour bien comprendre le swap & l'ordre des cartes
-                cardToSwap = cards[2]
-                cards[2] = currentCard
-                cards[0] = cardToSwap
-                return cards
-
-            # Si le joker est à la deuxième position
-            else:
-                # On met le joker à la deuxième position
-                # TODO Revoir les consignes pour bien comprendre le swap & l'ordre des cartes
-                cardToSwap = cards[1]
-                cards[1] = currentCard
-                cards[1] = cardToSwap
-                return cards
-
-# Applique la troisième opération pour obtenir la clée à partir du flux
-# On recherche d'abord la position des deux jokers
-# Pour chaque joker, on intervertit le paquet en dessous du joker par celui du dessus
-# TODO Réaliser des tests
-def genKeyStepThree(cards):
-    printBeginningStep("3",cards)
-    
-    # Détermine la position des jokers dans le jeu de carte
-    firstJokeyIndex = findCardIndex(cards, 53)
-    secondJokeyIndex = findCardIndex(cards, 54)
-    
-    # Détermine la position des jokers 
-    # Le premier index décrit l'index du premier joker dans le jeu de carte
-    # Le second index décrit l'index du second joker après avoir intervertit le paquet
-    firstIndex = -1
-    secondIndex = -1
-    if firstJokeyIndex < secondJokeyIndex :
-        firstIndex = firstJokeyIndex
-        secondIndex = secondJokeyIndex - firstIndex - 1
+# Move the joker black
+def step_one(deck):
+    index_joker_black = deck.index(53)
+    if index_joker_black != 53:
+        deck[index_joker_black], deck[index_joker_black + 1] = deck[index_joker_black + 1], deck[index_joker_black]
     else:
-        firstIndex = secondJokeyIndex
-        secondIndex = firstJokeyIndex - firstIndex - 1
+        deck.insert(1, deck.pop())
+    return deck
 
-    cards = invertByIndex(cards, firstIndex)
-    cards = invertByIndex(cards, secondIndex)
+# Move the joker red
+def step_two(deck):
+    index_joker_red = deck.index(54)
+    if index_joker_red == 53:
+        deck.insert(2, deck.pop())
+    elif index_joker_red == 52:
+        deck.insert(1, deck.pop(52))
+    else:
+        deck.insert(index_joker_red + 2, deck.pop(index_joker_red))
+    return deck
 
-    return cards
+# Cut the deck based on the position of the jokers
+def step_three(deck):
+    index_joker_black = deck.index(53)
+    index_joker_red = deck.index(54)
+    max_joker_index = max(index_joker_black, index_joker_red)
+    min_joker_index = min(index_joker_black, index_joker_red)
+    deck = deck[max_joker_index + 1:] + deck[min_joker_index:max_joker_index + 1] + deck[:min_joker_index]
+    return deck
 
-def genKeyStepFourth(cards):
-    printBeginningStep("4", cards)
+# Cut the deck based on the value of the last card
+def step_four(deck):
+    last_card = deck[-1]
+    if last_card == 54:
+        last_card = 53
+    deck = deck[last_card:-1] + deck[:last_card] + [deck[-1]]
+    return deck
 
-    index = cards[53]-1
-    if index == 53:
-        return cards
-    else :
-        cards = [*cards[index + 1:], *cards[0:index], cards[index]]
-    return cards
+# Get the card
+def step_five(deck):
+    first_card = deck[0]
+    if first_card == 54:
+        first_card = 53
+    m = deck[first_card]
+    if m == 54 or m == 53:
+        return None
+    else:
+        if m > 26:
+            m -= 26
+    return m
 
-# Génère une clée aléatoire d'une longeur donnée en paramètre
-def genKey(length):
-    # On déclare un tableau vide de longeur donné en paramètre
-    key = [0] * length
-    
-    for index in range(len(key)):
-        # On affecte une valeur aléatoire de l'alphabet à la clée (1 = A, ...)
-        key[index] = random.randint(1, 27)
-    return key
+# Encrypt the message
+def encrypt(deck, message):
+    key_code = ""
+    while len(key_code) < len(message):
+        deck = step_one(deck)
+        deck = step_two(deck)
+        deck = step_three(deck)
+        deck = step_four(deck)
+        m = step_five(deck)
+        if m != None:
+            key_code += chr(m + 64)
+    encrypted_text = ""
+    for i in range(len(message)):
+        c = ord(key_code[i])-64 + ord(message[i])-64
+        if c > 26:
+            c -= 26
+        encrypted_text += chr(c + 64)
+    return encrypted_text
 
-# Intervertit le jeu de cartes selon l'index d'une carte
-def invertByIndex(cards, index):
-    if index == 0:
-        cards = [*cards[index + 1:], cards[index]]
-    elif index == 53:
-        cards = [cards[index], *cards[0:index]]
-    else :
-        cards = [*cards[index + 1:], cards[index], *cards[0:index]]
+# Decrypt the message
+def decrypt(deck, encrypted_text):
+    key_code = ""
+    while len(key_code) < len(encrypted_text):
+        deck = step_one(deck)
+        deck = step_two(deck)
+        deck = step_three(deck)
+        deck = step_four(deck)
+        m = step_five(deck)
+        if m != None:
+            key_code += chr(m + 64)
+    message = ""
+    for i in range(len(encrypted_text)):
+        c = (ord(encrypted_text[i])-64) - (ord(key_code[i])-64)
+        if c < 1:
+            c += 26
+        message += chr(c + 64)
+    return message
 
-    return cards
+# Remove all non letters characters from the message and convert it to uppercase
+def remove_non_letters(message):
+    message = message.upper()
+    message = [c for c in message if c.isalpha()]
+    message = "".join(message)
+    return message
 
-# Recherche l'index d'une carte dans le jeu
-def findCardIndex(cards, cardValue):
-    # Recherche la position d'un joker 
-        founded = False
-        index = -1
-        while not founded:
-            index += 1
-            currentCard = cards[index]
-            founded = currentCard == cardValue or index > 53
-
-        if index > 53 :
-            print("Erreur pour la recherche de "+str(cardValue)+"dans ")
-            print(cards)
-            return -1 
-        else :
-            return index
-
-# Affiche le début d'uneopération pour obtenir la clée à partir du flux et le jeu de cartes
-def printBeginningStep(stepIndex, cards):
-    separator = "-------------------------------------------------------------------------"
-    print(separator+"\n")
-    print("Début partie "+stepIndex+":\n")
-    print(cards)
-    print("")
-    print(separator)
-    
 if __name__ == "__main__":
-    main()
+    # Create a deck of cards and shuffle it    
+    deck = create_deck()
+    deck = shuffle_deck(deck)
+    # Keep a copy of the original deck
+    original_deck = deck.copy()
+    # Clean the message
+    message = "Not a very long message, because i just want to test the program."
+    message = remove_non_letters(message)
+    print("Message: " + message)
+    # Encrypt the message
+    encrypted = encrypt(deck,message )
+    print("Encrypted message: " + encrypted)
+
+    deck = original_deck.copy()
+    # Decrypt the message
+    decrypted = decrypt(deck, encrypted)
+    print("Decrypted message: " + decrypted)
+    print("Does it work ? " + str(message == decrypted))
+
+
+
