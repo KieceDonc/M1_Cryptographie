@@ -45,7 +45,7 @@ def step_four(deck):
     deck = deck[last_card:-1] + deck[:last_card] + [deck[-1]]
     return deck
 
-# Get the card
+# Get the card (m) based on the value of the first card (m = deck[first_card])
 def step_five(deck):
     first_card = deck[0]
     if first_card == 54:
