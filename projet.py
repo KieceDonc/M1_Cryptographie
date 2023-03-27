@@ -111,6 +111,9 @@ if __name__ == "__main__":
     deck = create_deck()
     deck = shuffle_deck(deck)
 
+    encrypted_msg = ""
+    decrypted_msg = ""
+
     # Ouvrir le fichier en mode lecture
     with open("fichier.txt", "r") as f:
         # Lire chaque ligne et l'afficher
@@ -124,9 +127,19 @@ if __name__ == "__main__":
             # Encrypt the message
             encrypted = encrypt(deck,message )
             print("Encrypted message: " + encrypted)
+            encrypted_msg += encrypted + "\n"
 
             deck = original_deck.copy()
             # Decrypt the message
             decrypted = decrypt(deck, encrypted)
             print("Decrypted message: " + decrypted)
             print("Does it work ? " + str(message == decrypted))
+            decrypted_msg += decrypted + "\n"
+    
+    f = open("encrypted.txt", "w")
+    f.write(encrypted_msg)
+    f.close()
+
+    f = open("decrypted.txt", "w")
+    f.write(decrypted_msg)
+    f.close()
