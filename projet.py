@@ -1,4 +1,6 @@
 import random
+from unidecode import unidecode
+
 # Create a deck of cards
 def create_deck():
     return [i for i in range(1,55)]
@@ -101,27 +103,30 @@ def remove_non_letters(message):
     message = message.upper()
     message = [c for c in message if c.isalpha()]
     message = "".join(message)
+    message = unidecode(message)
     return message
 
 if __name__ == "__main__":
     # Create a deck of cards and shuffle it    
     deck = create_deck()
     deck = shuffle_deck(deck)
-    # Keep a copy of the original deck
-    original_deck = deck.copy()
-    # Clean the message
-    message = "Not a very long message, because i just want to test the program."
-    message = remove_non_letters(message)
-    print("Message: " + message)
-    # Encrypt the message
-    encrypted = encrypt(deck,message )
-    print("Encrypted message: " + encrypted)
 
-    deck = original_deck.copy()
-    # Decrypt the message
-    decrypted = decrypt(deck, encrypted)
-    print("Decrypted message: " + decrypted)
-    print("Does it work ? " + str(message == decrypted))
+    # Ouvrir le fichier en mode lecture
+    with open("fichier.txt", "r") as f:
+        # Lire chaque ligne et l'afficher
+        for ligne in f:
+            # Keep a copy of the original deck
+            original_deck = deck.copy()
+            
+            message = remove_non_letters(ligne)
+            print("Message: " + message)
+            
+            # Encrypt the message
+            encrypted = encrypt(deck,message )
+            print("Encrypted message: " + encrypted)
 
-
-
+            deck = original_deck.copy()
+            # Decrypt the message
+            decrypted = decrypt(deck, encrypted)
+            print("Decrypted message: " + decrypted)
+            print("Does it work ? " + str(message == decrypted))
