@@ -1,5 +1,9 @@
 import random
+from tkinter import messagebox
 from unidecode import unidecode
+import tkinter as tk
+from tkinter import ttk
+from tkinter import filedialog
 
 # Create a deck of cards
 def create_deck():
@@ -111,35 +115,10 @@ if __name__ == "__main__":
     deck = create_deck()
     deck = shuffle_deck(deck)
 
-    encrypted_msg = ""
-    decrypted_msg = ""
+    # Create the main window
+    root = tk.Tk()
+    root.title("Deck Editor")
 
-    # Ouvrir le fichier en mode lecture
-    with open("fichier.txt", "r") as f:
-        # Lire chaque ligne et l'afficher
-        for ligne in f:
-            # Keep a copy of the original deck
-            original_deck = deck.copy()
-            
-            message = remove_non_letters(ligne)
-            print("Message: " + message)
-            
-            # Encrypt the message
-            encrypted = encrypt(deck,message )
-            print("Encrypted message: " + encrypted)
-            encrypted_msg += encrypted + "\n"
-
-            deck = original_deck.copy()
-            # Decrypt the message
-            decrypted = decrypt(deck, encrypted)
-            print("Decrypted message: " + decrypted)
-            print("Does it work ? " + str(message == decrypted))
-            decrypted_msg += decrypted + "\n"
-    
-    f = open("encrypted.txt", "w")
-    f.write(encrypted_msg)
-    f.close()
-
-    f = open("decrypted.txt", "w")
-    f.write(decrypted_msg)
-    f.close()
+    # Create labels and entry
+    deck_label = ttk.Label(root, text="Deck:")
+    deck_label.grid(row=0, column=0, padx=5, pady=5)
