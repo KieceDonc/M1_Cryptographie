@@ -127,6 +127,7 @@ if __name__ == "__main__":
     deck_entry.grid(row=0, column=1, padx=5, pady=5)
     deck_entry.insert(0, deck)
 
+
     def shuffle_deck_entry():
         global deck
         deck_entry.delete(0, tk.END)
@@ -153,6 +154,8 @@ if __name__ == "__main__":
     open_button = ttk.Button(root, text="Open file", command=open_file)
     open_button.grid(row=1, column=1, padx=5, pady=5)
 
+    
+
     def encrypt_gui():
         global filename
         global deck
@@ -163,14 +166,19 @@ if __name__ == "__main__":
         if sorted(deck) != list(range(1, 55)):
             messagebox.showerror("Error", "The deck is not valid, please make sure the deck is valid, or randomize it")
             return
-        with open(filename, "r") as f:
-            message = f.read()
-        message = remove_non_letters(message)
         
-        encrypted_text = encrypt(deck, message)
-        with open(filename, "w") as f:
-            f.write(encrypted_text)
-        print(f"Encrypted text: {encrypted_text}")
+        
+        file = open(filename, "r")
+        message = [remove_non_letters(line) for line in file.readlines()]
+        message = [encrypt(deck, line)+'\n' for line in message]
+        file.close()
+        print(message)
+
+        file = open(filename, "w")
+        file.writelines(message)
+        file.close()
+
+        print(f"Encrypted file: {filename}")
         filename = ""
 
     # Create encrypt and decrypt buttons
@@ -191,12 +199,16 @@ if __name__ == "__main__":
         if sorted(deck) != list(range(1, 55)):
             messagebox.showerror("Error", "The deck is not valid, please make sure the deck is valid, or randomize it")
             return
-        with open(filename, "r") as f:
-            encrypted_text = f.read()
-        message = decrypt(deck, encrypted_text)
-        print (deck)
-        with open(filename, "w") as f:
-            f.write(message)
+        file = open(filename, "r")
+        message = [remove_non_letters(line) for line in file.readlines()]
+        message = [decrypt(deck, line)+'\n' for line in message]
+        file.close()
+        print(message)
+
+        file = open(filename, "w")
+        file.writelines(message)
+        file.close()
+        
         print(f"Decrypted text: {message}")
         filename = ""
 
