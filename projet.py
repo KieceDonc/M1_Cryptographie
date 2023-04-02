@@ -176,3 +176,32 @@ if __name__ == "__main__":
     # Create encrypt and decrypt buttons
     encrypt_button = ttk.Button(root, text="Encrypt", command=encrypt_gui)
     encrypt_button.grid(row=2, column=0, padx=5, pady=5)
+
+    # Create encrypt and decrypt buttons
+    encrypt_button = ttk.Button(root, text="Encrypt", command=encrypt_gui)
+    encrypt_button.grid(row=2, column=0, padx=5, pady=5)
+
+    def decrypt_gui():
+        global filename
+        global deck
+        deck = list(map(int, deck_entry.get().split()))
+        if filename == "":
+            messagebox.showerror("Error", "Please select a file")
+            return
+        if sorted(deck) != list(range(1, 55)):
+            messagebox.showerror("Error", "The deck is not valid, please make sure the deck is valid, or randomize it")
+            return
+        with open(filename, "r") as f:
+            encrypted_text = f.read()
+        message = decrypt(deck, encrypted_text)
+        print (deck)
+        with open(filename, "w") as f:
+            f.write(message)
+        print(f"Decrypted text: {message}")
+        filename = ""
+
+    decrypt_button = ttk.Button(root, text="Decrypt", command=decrypt_gui)
+    decrypt_button.grid(row=2, column=2, padx=5, pady=5)
+
+    # Start the main event loop
+    root.mainloop()
