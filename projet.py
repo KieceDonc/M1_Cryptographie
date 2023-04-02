@@ -122,3 +122,19 @@ if __name__ == "__main__":
     # Create labels and entry
     deck_label = ttk.Label(root, text="Deck:")
     deck_label.grid(row=0, column=0, padx=5, pady=5)
+
+    deck_entry = ttk.Entry(root, width=150)
+    deck_entry.grid(row=0, column=1, padx=5, pady=5)
+    deck_entry.insert(0, deck)
+
+    def shuffle_deck_entry():
+        global deck
+        deck_entry.delete(0, tk.END)
+        deck = create_deck()
+        deck = shuffle_deck(deck)
+        deck_entry.insert(0, deck)
+
+
+    # Create button to randomize deck
+    randomize_button = ttk.Button(root, text="Randomize", command=shuffle_deck_entry)
+    randomize_button.grid(row=0, column=2, padx=5, pady=5)
