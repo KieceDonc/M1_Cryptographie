@@ -138,3 +138,15 @@ if __name__ == "__main__":
     # Create button to randomize deck
     randomize_button = ttk.Button(root, text="Randomize", command=shuffle_deck_entry)
     randomize_button.grid(row=0, column=2, padx=5, pady=5)
+
+    filename = ""
+    # Create button to open a file dialog
+    def open_file():
+        global filename
+        filetypes = (("Text files", "*.txt"), ("All files", "*.*"))
+        filename = filedialog.askopenfilename(filetypes=filetypes)
+        if not filename.endswith(".txt"):
+            messagebox.showerror("Error", "Please select a .txt file")
+            return
+        print(f"Selected file: {filename}")
+
